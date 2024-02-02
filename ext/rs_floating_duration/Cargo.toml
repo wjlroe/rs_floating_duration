@@ -1,0 +1,13 @@
+[package]
+name = "rs_floating_duration"
+version = "0.1.0"
+edition = "2021"
+authors = ["William Roe <git@wjlr.org.uk>"]
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+floating-duration = "0.1.2"
+magnus = { version = "0.6.2" }
