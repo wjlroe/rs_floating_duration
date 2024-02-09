@@ -33,7 +33,7 @@ jobs:
         run: bundle exec rake examples
       - uses: actions/upload-artifact@v4
         with:
-          name: native_libs
+          name: native_libs_linux
           path: |
             lib/rs_floating_duration/rs_floating_duration.so
 
@@ -66,7 +66,7 @@ jobs:
         run: bundle exec rake examples
       - uses: actions/upload-artifact@v4
         with:
-          name: native_libs
+          name: native_libs_macos
           path: |
             lib/rs_floating_duration/rs_floating_duration.bundle
 
@@ -81,12 +81,15 @@ jobs:
           bundler-cache: true
       - uses: actions/download-artifact@4
         with:
-          name: native_libs
+          name: native_libs_linux
+      - uses: actions/download-artifact@4
+        with:
+          name: native_libs_macos
       - name: Copy libraries into place
         run: |
           mkdir -p lib/rs_floating_duration
-          cp native_libs/rs_floating_duration.bundle lib/rs_floating_duration/
-          cp native_libs/rs_floating_duration.so lib/rs_floating_duration/
+          cp native_libs_macos/rs_floating_duration.bundle lib/rs_floating_duration/
+          cp native_libs_linux/rs_floating_duration.so lib/rs_floating_duration/
       - name: Build gem
         run: gem build rs_floating_duration.gemspec
       - uses: actions/upload-artifact@v4
