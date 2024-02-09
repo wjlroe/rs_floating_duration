@@ -31,6 +31,11 @@ jobs:
         run: ls -lhR lib
       - name: Test example code
         run: bundle exec rake examples
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native_libs
+          path: |
+            lib/rs_floating_duration/rs_floating_duration.so
 
   macos:
     name: Build Rust library on macOS
@@ -59,4 +64,32 @@ jobs:
         run: ls -lhR lib
       - name: Test example code
         run: bundle exec rake examples
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native_libs
+          path: |
+            lib/rs_floating_duration/rs_floating_duration.bundle
 
+  ruby_gem:
+    name: Build the ruby gem
+    runs-on: ubuntu-latest
+    needs: [linux, macos]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: actions/download-artifact@4
+        with:
+          name: native_libs
+      - name: Copy libraries into place
+        run: |
+          mkdir -p lib/rs_floating_duration
+          cp native_libs/rs_floating_duration.bundle lib/rs_floating_duration/
+          cp native_libs/rs_floating_duration.so lib/rs_floating_duration/
+      - name: Build gem
+        run: gem build rs_floating_duration.gemspec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gem
+          path: ./*.gem
