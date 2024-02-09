@@ -28,4 +28,4 @@ jobs:
       - name: Build x86_64 release library
         run: bundle exec rake compile:release
       - name: Show libraries compiled
-        run: ls -lh lib
+        run: ls -lhR lib
