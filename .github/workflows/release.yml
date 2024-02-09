@@ -79,10 +79,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - uses: actions/download-artifact@4
+      - uses: actions/download-artifact@v4
         with:
           name: native_libs_linux
-      - uses: actions/download-artifact@4
+      - uses: actions/download-artifact@v4
         with:
           name: native_libs_macos
       - name: Copy libraries into place
