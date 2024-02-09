@@ -15,6 +15,7 @@ end
 task default: :compile
 
 task examples: :build do
+  require "bundler/setup"
   require "rs_floating_duration"
   numbers = [
     0.5,
