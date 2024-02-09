@@ -1,0 +1,29 @@
+name: Create release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  linux:
+    name: Build Rust library on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-release-${{ hashFiles(**/Cargo.lock') }}
+      - name: Install Rust
+        uses: actions-rs/toolchain@v11
+        with:
+          profile: minimal
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Build x86_64 release library
+        run: bundle exec rake compile:release
+      - name: Show libraries compiled
+        run: ls -lh lib
