@@ -29,3 +29,5 @@ jobs:
         run: bundle exec rake compile:release
       - name: Show libraries compiled
         run: ls -lhR lib
+      - name: Test example code
+        run: bundle exec rake examples
