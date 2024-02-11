@@ -88,9 +88,8 @@ jobs:
       - name: Copy libraries into place
         run: |
           mkdir -p lib/rs_floating_duration
-          ls -Rl .
-          cp native_libs_macos/rs_floating_duration.bundle lib/rs_floating_duration/
-          cp native_libs_linux/rs_floating_duration.so lib/rs_floating_duration/
+          mv rs_floating_duration.bundle lib/rs_floating_duration/
+          mv rs_floating_duration.so lib/rs_floating_duration/
       - name: Build gem
         run: gem build rs_floating_duration.gemspec
       - uses: actions/upload-artifact@v4
