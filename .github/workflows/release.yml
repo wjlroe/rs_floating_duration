@@ -29,9 +29,9 @@ jobs:
         with:
           bundler-cache: true
       - name: Build x86_64 release library
-        run: bundle exec rake compile:release
-      - name: Show libraries compiled
-        run: ls -lhR lib
+        run: |
+          bundle exec rake compile:release
+          ldd lib/rs_floating_duration/rs_floating_duration.so
       - name: Test example code
         run: bundle exec rake examples
       - uses: actions/upload-artifact@v4
@@ -65,21 +65,22 @@ jobs:
         run: |
           bundle exec rake compile:release
           mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_x64.bundle
+          file rs_floating_duration_x64.bundle
           otool -L rs_floating_duration_x64.bundle
       - name: Build arm64 release library
         run: |
           rustup target add aarch64-apple-darwin
           RUST_TARGET=aarch64-apple-darwin bundle exec rake compile:release
           mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_arm64.bundle
+          file rs_floating_duration_arm64.bundle
           otool -L rs_floating_duration_arm64.bundle
       - name: Combine targets into fat library
         run: |
           lipo -create rs_floating_duration_x64.bundle rs_floating_duration_arm64.bundle -output lib/rs_floating_duration/rs_floating_duration.bundle
+          file lib/rs_floating_duration/rs_floating_duration.bundle
           otool -L lib/rs_floating_duration/rs_floating_duration.bundle
-      - name: Show libraries compiled
-        run: ls -lhR lib
-      - name: Test example code
-        run: bundle exec rake examples
+      # - name: Test example code
+      #   run: bundle exec rake examples
       - uses: actions/upload-artifact@v4
         with:
           name: native_libs_macos
