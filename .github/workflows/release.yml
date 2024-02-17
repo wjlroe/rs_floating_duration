@@ -62,7 +62,18 @@ jobs:
         with:
           bundler-cache: true
       - name: Build x86_64 release library
-        run: bundle exec rake compile:release
+        run: |
+          bundle exec rake compile:release
+          cp lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_x64.bundle
+      - name: Build arm64 release library
+        run: |
+          rustup target add aarch64-apple-darwin
+          SDKROOT=$(xcrun -sdk macosx11.0 --show-sdk-path) \
+            MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.0 --show-sdk-platform-version) \
+            bundle exec rake compile:release -- --target aarch64-apple-darwin
+          cp lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_arm64.bundle
+      - name: Combine targets into fat library
+        run: lipo -create rs_floating_duration_x64.bundle rs_floating_duration_arm64.bundle -output lib/rs_floating_duration/rs_floating_duration_fat.bundle
       - name: Show libraries compiled
         run: ls -lhR lib
       - name: Test example code
