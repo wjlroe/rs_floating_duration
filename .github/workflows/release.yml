@@ -69,7 +69,7 @@ jobs:
       - name: Build arm64 release library
         run: |
           rustup target add aarch64-apple-darwin
-          bundle exec rake compile:release -- --target aarch64-apple-darwin
+          RUST_TARGET=aarch64-apple-darwin bundle exec rake compile:release
           mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_arm64.bundle
           otool -L rs_floating_duration_arm64.bundle
       - name: Combine targets into fat library
