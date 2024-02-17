@@ -111,9 +111,10 @@ jobs:
           mkdir -p lib/rs_floating_duration
           mv rs_floating_duration.bundle lib/rs_floating_duration/
           mv rs_floating_duration.so lib/rs_floating_duration/
-      - name: Build gem
-        run: gem build rs_floating_duration.gemspec
+      - id: build-gem
+        name: Build gem
+        run: gem build rs_floating_duration.gemspec | sed -nr 's/  File: (.+)/gem-filename=\1/p' >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
-          name: gem
-          path: ./*.gem
+          name: ${{ steps.build-gem.gem-filename }}
+          path: ${{ steps.build-gem.gem-filename }}
