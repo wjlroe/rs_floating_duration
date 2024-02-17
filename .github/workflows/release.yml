@@ -74,7 +74,7 @@ jobs:
           otool -L rs_floating_duration_arm64.bundle
       - name: Combine targets into fat library
         run: |
-          lipo -create rs_floating_duration_x64.bundle rs_floating_duration_arm64.bundle -output lib/rs_floating_duration/rs_floating_duration_fat.bundle
+          lipo -create rs_floating_duration_x64.bundle rs_floating_duration_arm64.bundle -output lib/rs_floating_duration/rs_floating_duration.bundle
           otool -L lib/rs_floating_duration/rs_floating_duration.bundle
       - name: Show libraries compiled
         run: ls -lhR lib
