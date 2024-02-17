@@ -62,12 +62,16 @@ jobs:
         with:
           bundler-cache: true
       - name: Build x86_64 release library
+        env:
+          CARGO_TARGET_DIR: target/x86_64
         run: |
           bundle exec rake compile:release
           mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_x64.bundle
           file rs_floating_duration_x64.bundle
           otool -L rs_floating_duration_x64.bundle
       - name: Build arm64 release library
+        env:
+          CARGO_TARGET_DIR: target/arm64
         run: |
           rustup target add aarch64-apple-darwin
           RUST_TARGET=aarch64-apple-darwin bundle exec rake compile:release
