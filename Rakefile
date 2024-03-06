@@ -10,6 +10,12 @@ GEMSPEC = Gem::Specification.load("rs_floating_duration.gemspec")
 
 RbSys::ExtensionTask.new("rs_floating_duration", GEMSPEC) do |ext|
   ext.lib_dir = "lib/rs_floating_duration"
+  ext.cross_compile = true
+  ext.cross_platform = [
+    "aarch64-linux",
+    "x86_64-linux",
+    "arm64-darwin"
+  ]
 end
 
 task default: :compile

@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  RUBY_CC_VERSION: "3.0.0:3.1.0:3.2.0:3.3.0"
+
 jobs:
   linux:
     name: Build Rust library on Linux
@@ -29,11 +32,19 @@ jobs:
         with:
           bundler-cache: true
       - name: Build x86_64 release library
+        env:
+          CARGO_TARGET_DIR: target/x86_64
         run: |
-          bundle exec rake compile:release
-          ldd lib/rs_floating_duration/rs_floating_duration.so
-      - name: Test example code
-        run: bundle exec rake examples
+          bundle exec rake -A -T
+          bundle exec rake native gem
+          ls -lh pkg
+      - name: Build aarch64 release library
+        env:
+          CARGO_TARGET_DIR: target/aarch64
+          # RUST_TARGET: aarch64-unknown-linux-gnu
+        run: |
+          bundle exec rake cross native:aarch64-linux gem
+          ls -lh pkg
       - uses: actions/upload-artifact@v4
         with:
           name: native_libs_linux
@@ -65,6 +76,7 @@ jobs:
         env:
           CARGO_TARGET_DIR: target/x86_64
         run: |
+          bundle exec rake -A -T
           bundle exec rake compile:release
           mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_x64.bundle
           file rs_floating_duration_x64.bundle
@@ -72,9 +84,10 @@ jobs:
       - name: Build arm64 release library
         env:
           CARGO_TARGET_DIR: target/arm64
+          RUST_TARGET: aarch64-apple-darwin
         run: |
           rustup target add aarch64-apple-darwin
-          RUST_TARGET=aarch64-apple-darwin bundle exec rake compile:release
+          bundle exec rake compile:release
           mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_arm64.bundle
           file rs_floating_duration_arm64.bundle
           otool -L rs_floating_duration_arm64.bundle
@@ -113,7 +126,8 @@ jobs:
           mv rs_floating_duration.so lib/rs_floating_duration/
       - id: build-gem
         name: Build gem
-        run: gem build rs_floating_duration.gemspec | sed -nr 's/  File: (.+)/gem-filename=\1/p' >> "$GITHUB_OUTPUT"
+        run: |
+          gem build rs_floating_duration.gemspec | sed -nr 's/  File: (.+)/gem-filename=\1/p' >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.build-gem.gem-filename }}

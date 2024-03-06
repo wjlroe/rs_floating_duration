@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
     `git ls-files -z`.split("\x0").reject do |f|
       (File.expand_path(f) == __FILE__) ||
         f.start_with?(*%w[bin/ test/ spec/ features/ .git appveyor Gemfile .github])
-    end + Dir.glob("lib/**/*.{so,bundle}")
+    end # + Dir.glob("lib/**/*.{so,bundle}")
   end
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
