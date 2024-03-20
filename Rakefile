@@ -14,7 +14,8 @@ RbSys::ExtensionTask.new("rs_floating_duration", GEMSPEC) do |ext|
   ext.cross_platform = [
     "aarch64-linux",
     "x86_64-linux",
-    "arm64-darwin"
+    "arm64-darwin23",
+    "x86_64-darwin23"
   ]
 end
 
