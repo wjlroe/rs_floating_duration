@@ -35,100 +35,70 @@ jobs:
         env:
           CARGO_TARGET_DIR: target/x86_64
         run: |
-          bundle exec rake -A -T
-          bundle exec rake native gem
-          ls -lh pkg
-      - name: Build aarch64 release library
-        env:
-          CARGO_TARGET_DIR: target/aarch64
-          # RUST_TARGET: aarch64-unknown-linux-gnu
-        run: |
-          bundle exec rake cross native:aarch64-linux gem
-          ls -lh pkg
+          bundle exec rake native gem | sed -nr 's/  File: (.+)/gem-filename=\1/p' >> "$GITHUB_ENV"
+      # - name: Build aarch64 release library
+      #   env:
+      #     CARGO_TARGET_DIR: target/aarch64
+      #     # RUST_TARGET: aarch64-unknown-linux-gnu
+      #   run: |
+      #     bundle exec rake cross native:aarch64-linux gem
+      #     ls -lh pkg
       - uses: actions/upload-artifact@v4
         with:
-          name: native_libs_linux
+          name: $GEM_FILENAME
           path: |
-            lib/rs_floating_duration/rs_floating_duration.so
+            pkg/$GEM_FILENAME
 
-  macos:
-    name: Build Rust library on macOS
-    runs-on: macos-11
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          profile: minimal
-          override: true
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - name: Build x86_64 release library
-        env:
-          CARGO_TARGET_DIR: target/x86_64
-        run: |
-          bundle exec rake -A -T
-          bundle exec rake compile:release
-          mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_x64.bundle
-          file rs_floating_duration_x64.bundle
-          otool -L rs_floating_duration_x64.bundle
-      - name: Build arm64 release library
-        env:
-          CARGO_TARGET_DIR: target/arm64
-          RUST_TARGET: aarch64-apple-darwin
-        run: |
-          rustup target add aarch64-apple-darwin
-          bundle exec rake compile:release
-          mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_arm64.bundle
-          file rs_floating_duration_arm64.bundle
-          otool -L rs_floating_duration_arm64.bundle
-      - name: Combine targets into fat library
-        run: |
-          lipo -create rs_floating_duration_x64.bundle rs_floating_duration_arm64.bundle -output lib/rs_floating_duration/rs_floating_duration.bundle
-          file lib/rs_floating_duration/rs_floating_duration.bundle
-          otool -L lib/rs_floating_duration/rs_floating_duration.bundle
-      # - name: Test example code
-      #   run: bundle exec rake examples
-      - uses: actions/upload-artifact@v4
-        with:
-          name: native_libs_macos
-          path: |
-            lib/rs_floating_duration/rs_floating_duration.bundle
-
-  ruby_gem:
-    name: Build the ruby gem
-    runs-on: ubuntu-latest
-    needs: [linux, macos]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
-      - uses: actions/download-artifact@v4
-        with:
-          name: native_libs_linux
-      - uses: actions/download-artifact@v4
-        with:
-          name: native_libs_macos
-      - name: Copy libraries into place
-        run: |
-          mkdir -p lib/rs_floating_duration
-          mv rs_floating_duration.bundle lib/rs_floating_duration/
-          mv rs_floating_duration.so lib/rs_floating_duration/
-      - id: build-gem
-        name: Build gem
-        run: |
-          gem build rs_floating_duration.gemspec | sed -nr 's/  File: (.+)/gem-filename=\1/p' >> "$GITHUB_OUTPUT"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.build-gem.gem-filename }}
-          path: ${{ steps.build-gem.gem-filename }}
+  # macos:
+  #   name: Build Rust library on macOS
+  #   runs-on: macos-11
+  #   if: false
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/cache@v4
+  #       with:
+  #         path: |
+  #           ~/.cargo/registry
+  #           ~/.cargo/git
+  #           target
+  #         key: ${{ runner.os }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
+  #     - name: Install Rust
+  #       uses: actions-rs/toolchain@v1
+  #       with:
+  #         toolchain: stable
+  #         profile: minimal
+  #         override: true
+  #     - uses: ruby/setup-ruby@v1
+  #       with:
+  #         bundler-cache: true
+  #     - name: Build x86_64 release library
+  #       env:
+  #         CARGO_TARGET_DIR: target/x86_64
+  #       run: |
+  #         bundle exec rake -A -T
+  #         bundle exec rake compile:release
+  #         mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_x64.bundle
+  #         file rs_floating_duration_x64.bundle
+  #         otool -L rs_floating_duration_x64.bundle
+  #     - name: Build arm64 release library
+  #       env:
+  #         CARGO_TARGET_DIR: target/arm64
+  #         RUST_TARGET: aarch64-apple-darwin
+  #       run: |
+  #         rustup target add aarch64-apple-darwin
+  #         bundle exec rake compile:release
+  #         mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_arm64.bundle
+  #         file rs_floating_duration_arm64.bundle
+  #         otool -L rs_floating_duration_arm64.bundle
+  #     - name: Combine targets into fat library
+  #       run: |
+  #         lipo -create rs_floating_duration_x64.bundle rs_floating_duration_arm64.bundle -output lib/rs_floating_duration/rs_floating_duration.bundle
+  #         file lib/rs_floating_duration/rs_floating_duration.bundle
+  #         otool -L lib/rs_floating_duration/rs_floating_duration.bundle
+  #     # - name: Test example code
+  #     #   run: bundle exec rake examples
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: native_libs_macos
+  #         path: |
+  #           lib/rs_floating_duration/rs_floating_duration.bundle

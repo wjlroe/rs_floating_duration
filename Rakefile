@@ -33,3 +33,10 @@ task examples: :build do
     puts "(#{number}s) => (short) #{RsFloatingDuration.time_format(number)} (long) #{RsFloatingDuration.time_format_long(number)}"
   end
 end
+
+task :gem_filename do
+  platform = Gem::Platform.new(RUBY_PLATFORM).to_s
+  latest_gem = Dir.glob("pkg/rs_floating_duration-*-#{platform}.gem").sort.last
+  raise "Couldn't find a gem for platform: #{platform}!" if latest_gem.nil?
+  puts "GEM_FILENAME=#{File.basename(latest_gem)}"
+end
