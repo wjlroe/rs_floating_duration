@@ -45,9 +45,9 @@ jobs:
       #     ls -lh pkg
       - uses: actions/upload-artifact@v4
         with:
-          name: $gem_filename
+          name: ${{ env.gem_filename }}
           path: |
-            pkg/$gem_filename
+            pkg/${{ env.gem_filename }}
 
   # macos:
   #   name: Build Rust library on macOS
