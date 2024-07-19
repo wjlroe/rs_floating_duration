@@ -35,7 +35,7 @@ jobs:
         env:
           CARGO_TARGET_DIR: target/x86_64
         run: |
-          bundle exec rake native gem | sed -nr 's/  File: (.+)/gem-filename=\1/p' >> "$GITHUB_ENV"
+          bundle exec rake native gem | sed -nr 's/  File: (.+)/gem_filename=\1/p' >> "$GITHUB_ENV"
       # - name: Build aarch64 release library
       #   env:
       #     CARGO_TARGET_DIR: target/aarch64
@@ -45,9 +45,9 @@ jobs:
       #     ls -lh pkg
       - uses: actions/upload-artifact@v4
         with:
-          name: $GEM_FILENAME
+          name: $gem_filename
           path: |
-            pkg/$GEM_FILENAME
+            pkg/$gem_filename
 
   # macos:
   #   name: Build Rust library on macOS
