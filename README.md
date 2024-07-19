@@ -1,7 +1,7 @@
 # RsFloatingDuration
 
-This is a simple Ruby gem that wraps the Rust Crate called [floating_duration]
-(https://github.com/torkleyy/floating-duration).
+This is a simple Ruby gem that wraps the Rust Crate called
+[floating_duration](https://github.com/torkleyy/floating-duration).
 
 The primary purpose of this gem is as a minimal example of how to wrap a native
 library in a ruby gem.
