@@ -19,6 +19,7 @@ GEM
     rake (13.1.0)
     rake-compiler (1.2.7)
       rake
+    rake-compiler-dock (1.4.0)
     rb_sys (0.9.87)
     regexp_parser (2.9.0)
     rexml (3.2.6)
@@ -60,6 +61,7 @@ PLATFORMS
 DEPENDENCIES
   rake (~> 13.0)
   rake-compiler
+  rake-compiler-dock
   rb_sys (~> 0.9.63)
   rs_floating_duration!
   standard

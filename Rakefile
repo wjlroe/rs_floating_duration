@@ -2,6 +2,7 @@
 
 require "bundler/gem_tasks"
 require "rb_sys/extensiontask"
+require "rake_compiler_dock"
 require "standard/rake"
 
 task build: :compile
@@ -20,6 +21,24 @@ RbSys::ExtensionTask.new("rs_floating_duration", GEMSPEC) do |ext|
 end
 
 task default: :compile
+
+cross_platforms = [
+  "aarch64-linux",
+  "x86_64-linux",
+  "x86_64-darwin",
+  "arm64-darwin"
+]
+
+namespace "gem" do
+  cross_platforms.each do |platform|
+    namespace platform do
+      task "rcd" do
+        Rake::Task["native:#{platform}"].invoke
+        Rake::Task["pkg/#{GEMSPEC.full_name}-#{Gem::Platform.new(platform)}.gem"].invoke
+      end
+    end
+  end
+end
 
 task examples: :build do
   require "bundler/setup"
