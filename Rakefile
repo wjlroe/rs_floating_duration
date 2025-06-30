@@ -11,31 +11,37 @@ GEMSPEC = Gem::Specification.load("rs_floating_duration.gemspec")
 
 RbSys::ExtensionTask.new("rs_floating_duration", GEMSPEC) do |ext|
   ext.lib_dir = "lib/rs_floating_duration"
-  ext.cross_compile = true
-  ext.cross_platform = [
-    "aarch64-linux",
-    "x86_64-linux",
-    "arm64-darwin23",
-    "x86_64-darwin23"
-  ]
 end
 
 task default: :compile
 
-cross_platforms = [
+CROSS_PLATFORMS = [
   "aarch64-linux",
   "x86_64-linux",
   "x86_64-darwin",
   "arm64-darwin"
 ]
 
+desc "Build native extension for a given platform (i.e. `rake 'native[aarch64-linux]'`)"
+task :native, [:platform] do |_t, args|
+  platform = args[:platform] || raise("Must specify platform")
+  sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', '2.7,3.0,3.1,3.2,3.3', '--build'
+end
+
+desc "Build cross-compiled gems for all platforms"
+task :cross_compile do
+  CROSS_PLATFORMS.each do |platform|
+    puts "Building for platform: #{platform}"
+    Rake::Task[:native].invoke(platform)
+    Rake::Task[:native].reenable
+  end
+end
+
 namespace "gem" do
-  cross_platforms.each do |platform|
-    namespace platform do
-      task "rcd" do
-        Rake::Task["native:#{platform}"].invoke
-        Rake::Task["pkg/#{GEMSPEC.full_name}-#{Gem::Platform.new(platform)}.gem"].invoke
-      end
+  CROSS_PLATFORMS.each do |platform|
+    desc "Build gem for #{platform}"
+    task platform do
+      sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', '2.7,3.0,3.1,3.2,3.3', '--build'
     end
   end
 end
