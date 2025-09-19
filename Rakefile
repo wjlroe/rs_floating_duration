@@ -22,10 +22,13 @@ CROSS_PLATFORMS = [
   "arm64-darwin"
 ]
 
+RUBIES = '2.7,3.0,3.1,3.2,3.3,3.4'
+
 desc "Build native extension for a given platform (i.e. `rake 'native[aarch64-linux]'`)"
 task :native, [:platform] do |_t, args|
   platform = args[:platform] || raise("Must specify platform")
-  sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', '2.7,3.0,3.1,3.2,3.3', '--build'
+  sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', RUBIES, '--build'
+  # sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--build'
 end
 
 desc "Build cross-compiled gems for all platforms"
@@ -37,14 +40,14 @@ task :cross_compile do
   end
 end
 
-namespace "gem" do
-  CROSS_PLATFORMS.each do |platform|
-    desc "Build gem for #{platform}"
-    task platform do
-      sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', '2.7,3.0,3.1,3.2,3.3', '--build'
-    end
-  end
-end
+# namespace "gem" do
+#   CROSS_PLATFORMS.each do |platform|
+#     desc "Build gem for #{platform}"
+#     task platform do
+#       sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', RUBIES, '--build'
+#     end
+#   end
+# end
 
 task examples: :build do
   require "bundler/setup"

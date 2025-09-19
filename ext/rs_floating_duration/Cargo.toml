@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 
 [dependencies]
 floating-duration = "0.1.2"
-magnus = { version = "0.6.2" }
+magnus = { version = "0.8.1" }
