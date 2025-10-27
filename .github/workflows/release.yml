@@ -43,7 +43,7 @@ jobs:
       #   run: |
       #     bundle exec rake cross native:aarch64-linux gem
       #     ls -lh pkg
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: ${{ env.gem_filename }}
           path: |
@@ -97,7 +97,7 @@ jobs:
   #         otool -L lib/rs_floating_duration/rs_floating_duration.bundle
   #     # - name: Test example code
   #     #   run: bundle exec rake examples
-  #     - uses: actions/upload-artifact@v4
+  #     - uses: actions/upload-artifact@v5
   #       with:
   #         name: native_libs_macos
   #         path: |
