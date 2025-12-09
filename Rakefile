@@ -3,7 +3,6 @@
 require "bundler/gem_tasks"
 require "rb_sys/extensiontask"
 require "rake_compiler_dock"
-require "standard/rake"
 
 task build: :compile
 
