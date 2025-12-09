@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-require_relative 'lib/rs_floating_duration/version'
+require_relative "lib/rs_floating_duration/version"
 
 Gem::Specification.new do |spec|
-  spec.name = 'rs_floating_duration'
+  spec.name = "rs_floating_duration"
   spec.version = RsFloatingDuration::VERSION
-  spec.authors = ['William Roe']
-  spec.email = ['rubygems@wjlr.org.uk']
-  spec.licenses = ['MIT']
+  spec.authors = ["William Roe"]
+  spec.email = ["rubygems@wjlr.org.uk"]
+  spec.licenses = ["MIT"]
 
   spec.summary = "A wrapper around Rust's floating_duration crate"
-  spec.description = 'The floating_duration crate can format time durations as strings'
-  spec.homepage = 'https://github.com/wjlroe/rs_floating_duration'
-  spec.required_ruby_version = '>= 3.2.0'
-  spec.required_rubygems_version = '>= 3.3.11'
+  spec.description = "The floating_duration crate can format time durations as strings"
+  spec.homepage = "https://github.com/wjlroe/rs_floating_duration"
+  spec.required_ruby_version = ">= 3.2.0"
+  spec.required_rubygems_version = ">= 3.3.11"
 
-  spec.metadata['allowed_push_host'] = 'https://rubygems.org'
+  spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
-  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata["homepage_uri"] = spec.homepage
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
@@ -27,8 +27,8 @@ Gem::Specification.new do |spec|
         f.start_with?(*%w[bin/ test/ spec/ features/ .git appveyor Gemfile .github])
     end
   end
-  spec.bindir = 'exe'
+  spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
-  spec.require_paths = ['lib']
-  spec.extensions = ['ext/rs_floating_duration/Cargo.toml']
+  spec.require_paths = ["lib"]
+  spec.extensions = ["ext/rs_floating_duration/Cargo.toml"]
 end

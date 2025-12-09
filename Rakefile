@@ -10,6 +10,10 @@ GEMSPEC = Gem::Specification.load("rs_floating_duration.gemspec")
 
 RbSys::ExtensionTask.new("rs_floating_duration", GEMSPEC) do |ext|
   ext.lib_dir = "lib/rs_floating_duration"
+
+  ext.cross_compiling do |gemspec|
+    gemspec.required_ruby_version = ">= 3.2.0"
+  end
 end
 
 task default: :compile
@@ -21,13 +25,12 @@ CROSS_PLATFORMS = [
   "arm64-darwin"
 ]
 
-RUBIES = '3.2'  # Build with 3.2, uses stable ABI to work with 3.2, 3.3, 3.4+
+RUBIES = "3.2" # Build with 3.2, uses stable ABI to work with 3.2, 3.3, 3.4+
 
 desc "Build native extension for a given platform (i.e. `rake 'native[aarch64-linux]'`)"
 task :native, [:platform] do |_t, args|
   platform = args[:platform] || raise("Must specify platform")
-  sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', RUBIES, '--build'
-  # sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--build'
+  sh "bundle", "exec", "rb-sys-dock", "--platform", platform, "--ruby-versions", RUBIES, "--build"
 end
 
 desc "Build cross-compiled gems for all platforms"
@@ -38,15 +41,6 @@ task :cross_compile do
     Rake::Task[:native].reenable
   end
 end
-
-# namespace "gem" do
-#   CROSS_PLATFORMS.each do |platform|
-#     desc "Build gem for #{platform}"
-#     task platform do
-#       sh 'bundle', 'exec', 'rb-sys-dock', '--platform', platform, '--ruby-versions', RUBIES, '--build'
-#     end
-#   end
-# end
 
 task examples: :build do
   require "bundler/setup"
