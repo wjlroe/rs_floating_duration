@@ -12,6 +12,8 @@ RbSys::ExtensionTask.new("rs_floating_duration", GEMSPEC) do |ext|
   ext.lib_dir = "lib/rs_floating_duration"
 
   ext.cross_compiling do |gemspec|
+    # Override the ruby version because by default rake-compiler will set it to the version it compiled with
+    # Since Ruby 3.2, it has a stable ABI, which means we don't need separate extensions per-ruby version
     gemspec.required_ruby_version = ">= 3.2.0"
   end
 end
