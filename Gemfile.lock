@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rs_floating_duration (0.2.0)
+    rs_floating_duration (0.3.0)
 
 GEM
   remote: https://rubygems.org/

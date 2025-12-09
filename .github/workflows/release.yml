@@ -7,7 +7,7 @@ on:
       - main
 
 env:
-  RUBY_CC_VERSION: "3.0.0:3.1.0:3.2.0:3.3.0"
+  RUBY_CC_VERSION: "3.2.0"  # Build with 3.2, uses stable ABI
 
 jobs:
   linux:

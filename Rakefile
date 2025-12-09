@@ -21,7 +21,7 @@ CROSS_PLATFORMS = [
   "arm64-darwin"
 ]
 
-RUBIES = '2.7,3.0,3.1,3.2,3.3,3.4'
+RUBIES = '3.2'  # Build with 3.2, uses stable ABI to work with 3.2, 3.3, 3.4+
 
 desc "Build native extension for a given platform (i.e. `rake 'native[aarch64-linux]'`)"
 task :native, [:platform] do |_t, args|

@@ -15,13 +15,13 @@ The gem now supports cross-compilation using `rb-sys-dock`, which provides Docke
 
 ## Supported Ruby Versions
 
-- Ruby 2.7+
-- Ruby 3.0+
-- Ruby 3.1+
 - Ruby 3.2+
 - Ruby 3.3+
+- Ruby 3.4+
 
-Note: Ruby 2.6 is not supported due to compatibility issues with Magnus 0.6.2.
+Note: This gem uses Ruby's stable ABI (introduced in 3.2), so a single binary
+works across all Ruby 3.2+ versions. Ruby 2.7, 3.0, and 3.1 are no longer
+supported as of version 0.3.0.
 
 ## Prerequisites
 
@@ -61,11 +61,11 @@ bundle exec rake cross_compile
 You can also use `rb-sys-dock` directly:
 
 ```bash
-# Cross-compile for ARM64 Linux with specific Ruby versions
-bundle exec rb-sys-dock --platform aarch64-linux --ruby-versions 2.7,3.0,3.1,3.2,3.3 --build
+# Cross-compile for ARM64 Linux (Ruby 3.2 with stable ABI for 3.2+)
+bundle exec rb-sys-dock --platform aarch64-linux --ruby-versions 3.2 --build
 
 # Cross-compile for x86_64 Linux
-bundle exec rb-sys-dock --platform x86_64-linux --ruby-versions 2.7,3.0,3.1,3.2,3.3 --build
+bundle exec rb-sys-dock --platform x86_64-linux --ruby-versions 3.2 --build
 ```
 
 ## Generated Gems
@@ -83,16 +83,15 @@ pkg/
 
 ## Gem Structure
 
-Each cross-compiled gem contains native extensions for multiple Ruby versions:
+Each cross-compiled gem contains a single native extension using Ruby's stable ABI:
 
 ```
 lib/rs_floating_duration/
-├── 2.7/rs_floating_duration.so
-├── 3.0/rs_floating_duration.so
-├── 3.1/rs_floating_duration.so
-├── 3.2/rs_floating_duration.so
-└── 3.3/rs_floating_duration.so
+└── 3.2/rs_floating_duration.so    # Works for Ruby 3.2, 3.3, 3.4+
 ```
+
+The stable ABI ensures forward compatibility with future Ruby versions without
+requiring recompilation.
 
 ## Troubleshooting
 

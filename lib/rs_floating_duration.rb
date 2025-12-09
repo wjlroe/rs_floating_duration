@@ -1,12 +1,7 @@
 # frozen_string_literal: true
 
-require_relative "rs_floating_duration/version"
-begin
-  RUBY_VERSION =~ /(\d+\.\d+)/
-  require_relative "#{$1}/rs_floating_duration/rs_floating_duration"
-rescue LoadError
-  require "rs_floating_duration/rs_floating_duration"
-end
+require_relative 'rs_floating_duration/version'
+require 'rs_floating_duration/rs_floating_duration'
 
 module RsFloatingDuration
   class Error < StandardError; end
