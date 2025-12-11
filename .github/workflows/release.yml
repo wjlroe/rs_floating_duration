@@ -55,6 +55,7 @@ jobs:
         env:
           CARGO_TARGET_DIR: target/${{ matrix.platform }}
         run: |
+          set -o pipefail
           bundle exec rake ${{ matrix.rake_task }} | tee build.log
           gem_filename=$(grep -oP '(?<=File: ).*\.gem$' build.log | tail -1)
           echo "gem_filename=$gem_filename" >> "$GITHUB_ENV"
