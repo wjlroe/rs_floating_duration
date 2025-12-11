@@ -18,16 +18,16 @@ jobs:
         include:
           - platform: arm64-darwin
             os: macos-14  # M1 runner
-            rake_task: native:arm64-darwin gem
+            rake_task: native:arm64-darwin
           - platform: x86_64-linux
             os: ubuntu-latest
-            rake_task: native:x86_64-linux gem
+            rake_task: native:x86_64-linux
           - platform: aarch64-linux
             os: ubuntu-latest
-            rake_task: cross native:aarch64-linux gem
+            rake_task: native:aarch64-linux
           - platform: ruby
             os: ubuntu-latest
-            rake_task: gem
+            rake_task: build
     steps:
       - uses: actions/checkout@v6
 
@@ -38,7 +38,7 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-${{ matrix.platform }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
-      
+
       - name: Install Rust
         if: matrix.platform != 'ruby'
         uses: actions-rs/toolchain@v1
@@ -46,11 +46,11 @@ jobs:
           toolchain: stable
           profile: minimal
           override: true
-      
+
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      
+
       - name: Build gem
         env:
           CARGO_TARGET_DIR: target/${{ matrix.platform }}
