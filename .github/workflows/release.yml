@@ -19,7 +19,7 @@ jobs:
         include:
           - platform: arm64-darwin
             os: macos-latest  # M1 runner
-            rake_task: "native:arm64-darwin24 gem"
+            rake_task: "native:rs_floating_duration gem"
           - platform: x86_64-linux
             os: ubuntu-latest
             rake_task: "native[x86_64-linux]"
