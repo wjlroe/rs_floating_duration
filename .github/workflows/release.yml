@@ -10,95 +10,56 @@ env:
   RUBY_CC_VERSION: "3.2"  # Build with 3.2, uses stable ABI
 
 jobs:
-  linux:
-    name: Build Rust library on Linux
-    runs-on: ubuntu-latest
+  build-gems:
+    name: Build gem (${{ matrix.platform }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - platform: arm64-darwin
+            os: macos-14  # M1 runner
+            rake_task: native:arm64-darwin gem
+          - platform: x86_64-linux
+            os: ubuntu-latest
+            rake_task: native:x86_64-linux gem
+          - platform: aarch64-linux
+            os: ubuntu-latest
+            rake_task: cross native:aarch64-linux gem
+          - platform: ruby
+            os: ubuntu-latest
+            rake_task: gem
     steps:
       - uses: actions/checkout@v6
+
       - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-${{ matrix.platform }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
+      
       - name: Install Rust
+        if: matrix.platform != 'ruby'
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           profile: minimal
           override: true
+      
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - name: Build x86_64 release library
+      
+      - name: Build gem
         env:
-          CARGO_TARGET_DIR: target/x86_64
+          CARGO_TARGET_DIR: target/${{ matrix.platform }}
         run: |
-          bundle exec rake native gem | sed -nr 's/  File: (.+)/gem_filename=\1/p' >> "$GITHUB_ENV"
-      # - name: Build aarch64 release library
-      #   env:
-      #     CARGO_TARGET_DIR: target/aarch64
-      #     # RUST_TARGET: aarch64-unknown-linux-gnu
-      #   run: |
-      #     bundle exec rake cross native:aarch64-linux gem
-      #     ls -lh pkg
+          bundle exec rake ${{ matrix.rake_task }} | tee build.log
+          gem_filename=$(grep -oP '(?<=File: ).*\.gem$' build.log | tail -1)
+          echo "gem_filename=$gem_filename" >> "$GITHUB_ENV"
+      
       - uses: actions/upload-artifact@v5
         with:
-          name: ${{ env.gem_filename }}
-          path: |
-            pkg/${{ env.gem_filename }}
-
-  # macos:
-  #   name: Build Rust library on macOS
-  #   runs-on: macos-11
-  #   if: false
-  #   steps:
-  #     - uses: actions/checkout@v6
-  #     - uses: actions/cache@v4
-  #       with:
-  #         path: |
-  #           ~/.cargo/registry
-  #           ~/.cargo/git
-  #           target
-  #         key: ${{ runner.os }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
-  #     - name: Install Rust
-  #       uses: actions-rs/toolchain@v1
-  #       with:
-  #         toolchain: stable
-  #         profile: minimal
-  #         override: true
-  #     - uses: ruby/setup-ruby@v1
-  #       with:
-  #         bundler-cache: true
-  #     - name: Build x86_64 release library
-  #       env:
-  #         CARGO_TARGET_DIR: target/x86_64
-  #       run: |
-  #         bundle exec rake -A -T
-  #         bundle exec rake compile:release
-  #         mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_x64.bundle
-  #         file rs_floating_duration_x64.bundle
-  #         otool -L rs_floating_duration_x64.bundle
-  #     - name: Build arm64 release library
-  #       env:
-  #         CARGO_TARGET_DIR: target/arm64
-  #         RUST_TARGET: aarch64-apple-darwin
-  #       run: |
-  #         rustup target add aarch64-apple-darwin
-  #         bundle exec rake compile:release
-  #         mv lib/rs_floating_duration/rs_floating_duration.bundle rs_floating_duration_arm64.bundle
-  #         file rs_floating_duration_arm64.bundle
-  #         otool -L rs_floating_duration_arm64.bundle
-  #     - name: Combine targets into fat library
-  #       run: |
-  #         lipo -create rs_floating_duration_x64.bundle rs_floating_duration_arm64.bundle -output lib/rs_floating_duration/rs_floating_duration.bundle
-  #         file lib/rs_floating_duration/rs_floating_duration.bundle
-  #         otool -L lib/rs_floating_duration/rs_floating_duration.bundle
-  #     # - name: Test example code
-  #     #   run: bundle exec rake examples
-  #     - uses: actions/upload-artifact@v5
-  #       with:
-  #         name: native_libs_macos
-  #         path: |
-  #           lib/rs_floating_duration/rs_floating_duration.bundle
+          name: gem-${{ matrix.platform }}
+          path: pkg/${{ env.gem_filename }}
