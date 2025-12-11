@@ -18,13 +18,13 @@ jobs:
         include:
           - platform: arm64-darwin
             os: macos-14  # M1 runner
-            rake_task: native:arm64-darwin
+            rake_task: "native[arm64-darwin]"
           - platform: x86_64-linux
             os: ubuntu-latest
-            rake_task: native:x86_64-linux
+            rake_task: "native[x86_64-linux]"
           - platform: aarch64-linux
             os: ubuntu-latest
-            rake_task: native:aarch64-linux
+            rake_task: "native[aarch64-linux]"
           - platform: ruby
             os: ubuntu-latest
             rake_task: build
