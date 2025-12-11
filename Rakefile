@@ -4,8 +4,6 @@ require "bundler/gem_tasks"
 require "rb_sys/extensiontask"
 require "rake_compiler_dock"
 
-task build: :compile
-
 GEMSPEC = Gem::Specification.load("rs_floating_duration.gemspec")
 
 RbSys::ExtensionTask.new("rs_floating_duration", GEMSPEC) do |ext|
