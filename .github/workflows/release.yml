@@ -40,6 +40,12 @@ jobs:
             target
           key: ${{ runner.os }}-${{ matrix.platform }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Set up Docker (macOS)
+        if: matrix.platform == 'arm64-darwin'
+        run: |
+          brew install colima
+          colima start
+
       - name: Install Rust
         if: matrix.platform != 'ruby'
         uses: actions-rs/toolchain@v1
