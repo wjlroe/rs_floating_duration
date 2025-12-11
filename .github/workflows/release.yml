@@ -53,6 +53,7 @@ jobs:
           CARGO_TARGET_DIR: target/${{ matrix.platform }}
         run: |
           set -o pipefail
+          bundle exec ruby -e 'puts RUBY_PLATFORM'
           bundle exec rake ${{ matrix.rake_task }}
           echo "gem_filename=$(ls -t pkg/*.gem|head -1|xargs basename)" >> "$GITHUB_ENV"
 
