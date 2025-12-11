@@ -18,7 +18,7 @@ jobs:
       matrix:
         include:
           - platform: arm64-darwin
-            os: macos-14  # M1 runner
+            os: macos-latest  # M1 runner
             rake_task: "native[arm64-darwin]"
           - platform: x86_64-linux
             os: ubuntu-latest
