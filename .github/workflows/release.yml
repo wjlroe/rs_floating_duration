@@ -59,11 +59,10 @@ jobs:
           CARGO_TARGET_DIR: target/${{ matrix.platform }}
         run: |
           set -o pipefail
-          bundle exec rake ${{ matrix.rake_task }} | tee build.log
-          gem_filename=$(grep -oP '(?<=File: ).*\.gem$' build.log | tail -1)
-          echo "gem_filename=$gem_filename" >> "$GITHUB_ENV"
-      
+          bundle exec rake ${{ matrix.rake_task }}
+          echo "gem_filename=$(ls -t pkg/*.gem|head -1)" >> "$GITHUB_ENV"
+
       - uses: actions/upload-artifact@v5
         with:
           name: gem-${{ matrix.platform }}
-          path: pkg/${{ env.gem_filename }}
+          path: ${{ env.gem_filename }}
