@@ -60,9 +60,9 @@ jobs:
         run: |
           set -o pipefail
           bundle exec rake ${{ matrix.rake_task }}
-          echo "gem_filename=$(ls -t pkg/*.gem|head -1)" >> "$GITHUB_ENV"
+          echo "gem_filename=$(ls -t pkg/*.gem|head -1|xargs basename)" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v5
         with:
-          name: gem-${{ matrix.platform }}
-          path: ${{ env.gem_filename }}
+          name: ${{ env.gem_filename }}
+          path: pkg/${{ env.gem_filename }}
