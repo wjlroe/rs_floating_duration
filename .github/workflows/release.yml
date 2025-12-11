@@ -20,8 +20,6 @@ jobs:
           - platform: arm64-darwin
             os: macos-latest  # M1 runner
             rake_task: "native[arm64-darwin]"
-            env:
-              RB_SYS_DOCK_DISABLED: 1
           - platform: x86_64-linux
             os: ubuntu-latest
             rake_task: "native[x86_64-linux]"
@@ -42,6 +40,12 @@ jobs:
             target
           key: ${{ runner.os }}-${{ matrix.platform }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Set up Docker (macOS)
+        if: matrix.platform == 'arm64-darwin'
+        run: |
+          brew install docker colima
+          colima start
+
       - name: Install Rust
         if: matrix.platform != 'ruby'
         uses: actions-rs/toolchain@v1
@@ -57,10 +61,8 @@ jobs:
       - name: Build gem
         env:
           CARGO_TARGET_DIR: target/${{ matrix.platform }}
-          RB_SYS_DOCK_DISABLED: ${{ matrix.env.RB_SYS_DOCK_DISABLED }}
         run: |
           set -o pipefail
-          env
           bundle exec rake ${{ matrix.rake_task }} | tee build.log
           gem_filename=$(grep -oP '(?<=File: ).*\.gem$' build.log | tail -1)
           echo "gem_filename=$gem_filename" >> "$GITHUB_ENV"
