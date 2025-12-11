@@ -19,7 +19,7 @@ jobs:
         include:
           - platform: arm64-darwin
             os: macos-latest  # M1 runner
-            rake_task: "native[arm64-darwin]"
+            rake_task: "native:arm64-darwin24 gem"
           - platform: x86_64-linux
             os: ubuntu-latest
             rake_task: "native[x86_64-linux]"
@@ -39,12 +39,6 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-${{ matrix.platform }}-cargo-release-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Set up Docker (macOS)
-        if: matrix.platform == 'arm64-darwin'
-        run: |
-          brew install docker colima
-          colima start
 
       - name: Install Rust
         if: matrix.platform != 'ruby'
