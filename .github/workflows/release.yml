@@ -20,11 +20,13 @@ jobs:
           - platform: arm64-darwin
             os: macos-latest  # M1 runner
             rake_task: "native[arm64-darwin]"
+            env:
+              RB_SYS_DOCK_DISABLED: 1
           - platform: x86_64-linux
             os: ubuntu-latest
             rake_task: "native[x86_64-linux]"
           - platform: aarch64-linux
-            os: ubuntu-latest
+            os: ubuntu-24.04-arm
             rake_task: "native[aarch64-linux]"
           - platform: ruby
             os: ubuntu-latest
@@ -55,6 +57,7 @@ jobs:
       - name: Build gem
         env:
           CARGO_TARGET_DIR: target/${{ matrix.platform }}
+          RB_SYS_DOCK_DISABLED: ${{ matrix.env.RB_SYS_DOCK_DISABLED }}
         run: |
           set -o pipefail
           bundle exec rake ${{ matrix.rake_task }} | tee build.log
