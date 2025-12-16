@@ -56,7 +56,7 @@ jobs:
           bundle exec rake ${{ matrix.rake_task }}
           echo "gem_filename=$(ls -t pkg/*.gem|head -1|xargs basename)" >> "$GITHUB_ENV"
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v6
         with:
           name: ${{ env.gem_filename }}
           path: pkg/${{ env.gem_filename }}
