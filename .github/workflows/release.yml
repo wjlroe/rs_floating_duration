@@ -53,7 +53,7 @@ jobs:
         run: |
           set -o pipefail
           bundle exec ruby -e 'puts RUBY_PLATFORM'
-          bundle exec rake ${{ matrix.rake_task }}
+          bundle exec rake --trace ${{ matrix.rake_task }}
           echo "gem_filename=$(ls -t pkg/*.gem|head -1|xargs basename)" >> "$GITHUB_ENV"
 
       - uses: actions/upload-artifact@v6
