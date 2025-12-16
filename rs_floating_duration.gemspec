@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary = "A wrapper around Rust's floating_duration crate"
   spec.description = "The floating_duration crate can format time durations as strings"
   spec.homepage = "https://github.com/wjlroe/rs_floating_duration"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 3.2.0"
   spec.required_rubygems_version = ">= 3.3.11"
 
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.files = Dir.chdir(__dir__) do
     `git ls-files -z`.split("\x0").reject do |f|
       (File.expand_path(f) == __FILE__) ||
-        f.start_with?(*%w[bin/ test/ spec/ features/ .git appveyor Gemfile .github])
+        f.start_with?(*%w[bin/ test/ spec/ features/ .git appveyor Gemfile .github .zed mise.toml Dockerfile])
     end
   end
   spec.bindir = "exe"
