@@ -9,6 +9,6 @@ gem "rake", "~> 13.0"
 
 gem "rake-compiler"
 gem "rake-compiler-dock"
-gem "rb_sys", "~> 0.9.63"
+gem "rb_sys", "~> 0.9.119"
 
 gem "standard", group: [:development, :test]
