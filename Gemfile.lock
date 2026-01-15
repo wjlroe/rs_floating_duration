@@ -67,7 +67,7 @@ DEPENDENCIES
   rake (~> 13.0)
   rake-compiler
   rake-compiler-dock
-  rb_sys (~> 0.9.63)
+  rb_sys (~> 0.9.119)
   rs_floating_duration!
   standard
 
