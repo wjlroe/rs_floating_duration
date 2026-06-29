@@ -24,7 +24,7 @@ jobs:
             rake_task: "native[x86_64-linux]"
           - platform: aarch64-linux
             os: ubuntu-latest # rb-sys:aarch64-linux was built for amd64 platform (by mistake?)
-            rake_task: "native[aarch64-linux]"
+            rake_task: "native:rs_floating_duration gem"
           - platform: ruby
             os: ubuntu-latest
             rake_task: build
